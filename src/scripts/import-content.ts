@@ -16,6 +16,7 @@ import "dotenv/config";
 import { execFileSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import axios from "axios";
 import mongoose from "mongoose";
 import { dbConnect } from "../config/mongo";
 import { Coupon } from "../models/coupon.model";
@@ -130,6 +131,41 @@ function sleep(ms: number): Promise<void> {
 
 function driveDownloadUrl(driveId: string): string {
   return `https://drive.usercontent.google.com/download?id=${driveId}&export=download&confirm=t`;
+}
+
+/**
+ * Pide el archivo a Drive como lo hará Bunny y corta apenas llegan las cabeceras.
+ * Si Drive responde HTML (cuota de descargas excedida, archivo sin compartir),
+ * Bunny guardaría esa página y el video moriría con "Invalid file": mejor no pedirlo.
+ */
+async function assertDriveServesVideo(driveId: string): Promise<void> {
+  const controller = new AbortController();
+  try {
+    const response = await axios.get(driveDownloadUrl(driveId), {
+      responseType: "stream",
+      signal: controller.signal,
+      timeout: 30_000,
+      validateStatus: () => true,
+    });
+    // Al cortar la descarga el stream emite un error que aquí no interesa.
+    response.data.on("error", () => undefined);
+    const contentType = String(response.headers["content-type"] ?? "");
+    let body = "";
+    if (contentType.includes("text/html")) {
+      for await (const chunk of response.data) {
+        body += chunk.toString();
+        if (body.length > 4000) break;
+      }
+    }
+    if (response.status !== 200 || !/^(video|application\/octet-stream)/.test(contentType)) {
+      const why = /quota exceeded/i.test(body)
+        ? "cuota de descargas de Drive excedida para este archivo (Google la libera en hasta 24 h)"
+        : `respondió HTTP ${response.status} ${contentType || "sin content-type"}`;
+      throw new Error(`Drive no entrega el archivo: ${why}`);
+    }
+  } finally {
+    controller.abort();
+  }
 }
 
 function statusLabel(status: number): string {
@@ -407,6 +443,7 @@ async function attachVideos(entry: ManifestProduct, productId: mongoose.Types.Ob
           found = null;
         }
         if (!found) {
+          await assertDriveServesVideo(lessonEntry.driveId as string);
           const fetched = await bunnyService.fetchVideoFromUrl(
             driveDownloadUrl(lessonEntry.driveId as string),
             title,
