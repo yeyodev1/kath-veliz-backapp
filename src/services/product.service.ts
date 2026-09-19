@@ -57,7 +57,7 @@ export function toProductCard(product: any, stats?: LessonStats) {
 export async function toProductDetail(product: any) {
   const productId = product._id.toString();
   const [outline, sessions] = await Promise.all([
-    contentService.getPublicOutline(productId),
+    contentService.getPublicOutline(productId, product.saleMode === "waitlist"),
     LiveSession.find({ product: productId, startsAt: { $gte: new Date() } })
       .sort({ startsAt: 1 })
       .limit(10)
