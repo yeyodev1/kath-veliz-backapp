@@ -64,10 +64,18 @@ export interface PublicOutline {
 }
 
 /** Temario que ve cualquiera en la landing: títulos y duraciones, nunca el video. */
-export async function getPublicOutline(productId: string): Promise<PublicOutline> {
+export async function getPublicOutline(
+  productId: string,
+  // En lista de espera el temario planificado es lo que vende: se muestran también las
+  // lecciones que aún no tienen video. Son solo títulos; nada de eso es reproducible.
+  includePlanned = false,
+): Promise<PublicOutline> {
+  const lessonFilter = includePlanned
+    ? { product: productId }
+    : { product: productId, isPublished: true };
   const [modules, lessons] = await Promise.all([
     Module.find({ product: productId }).sort({ order: 1, createdAt: 1 }).lean(),
-    Lesson.find({ product: productId, isPublished: true }).sort({ order: 1, createdAt: 1 }).lean(),
+    Lesson.find(lessonFilter).sort({ order: 1, createdAt: 1 }).lean(),
   ]);
 
   const outline = modules
@@ -81,7 +89,7 @@ export async function getPublicOutline(productId: string): Promise<PublicOutline
           id: lesson._id.toString(),
           title: lesson.title,
           durationSeconds: lesson.durationSeconds,
-          isFreePreview: lesson.isFreePreview,
+          isFreePreview: lesson.isPublished && lesson.isFreePreview,
         })),
     }))
     // Un módulo sin lecciones publicadas todavía no existe para el público.
