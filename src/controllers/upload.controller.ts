@@ -4,23 +4,9 @@ import multer from "multer";
 import { CustomError } from "../errors/customError.error";
 import { uploadMiddleware } from "../middlewares/upload.middleware";
 import * as cloudinaryService from "../services/cloudinary.service";
+import { FILE_EXTENSIONS, IMAGE_EXTENSIONS } from "../services/cloudinary.service";
+import { requiredString } from "../utils/input";
 
-const FILE_EXTENSIONS = [
-  ".pdf",
-  ".xlsx",
-  ".xls",
-  ".xlsm",
-  ".csv",
-  ".docx",
-  ".doc",
-  ".pptx",
-  ".ppt",
-  ".zip",
-  ".txt",
-  ".png",
-  ".jpg",
-  ".jpeg",
-];
 
 /**
  * Recibe el campo `file`. Envuelve a multer para que un archivo demasiado
@@ -76,6 +62,36 @@ export async function uploadFile(req: Request, res: Response, next: NextFunction
     const isPrivate = String(req.body?.private ?? req.query.private ?? "") === "true";
     const result = await cloudinaryService.uploadRaw(req.file.buffer, filename, { isPrivate });
     res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * POST /api/admin/uploads/signature — { kind, filename, isPrivate? } → firma de subida directa.
+ * El archivo no pasa por aquí: el navegador lo envía a Cloudinary con esta firma.
+ */
+export async function uploadSignature(req: Request, res: Response, next: NextFunction) {
+  try {
+    const kind = req.body?.kind;
+    if (kind !== "image" && kind !== "file") {
+      throw new CustomError("Indica si vas a subir una imagen o un archivo", 400);
+    }
+    const filename = requiredString(req.body?.filename, "Falta el nombre del archivo", 200);
+    const extension = path.extname(filename).toLowerCase();
+
+    if (kind === "image" && !IMAGE_EXTENSIONS.includes(extension)) {
+      throw new CustomError("La imagen debe ser JPG, PNG, WebP, GIF o HEIC.", 400);
+    }
+    if (kind === "file" && !FILE_EXTENSIONS.includes(extension)) {
+      throw new CustomError(
+        "Ese tipo de archivo no está permitido. Sube un PDF, Excel, Word, PowerPoint, zip o imagen.",
+        400,
+      );
+    }
+
+    const isPrivate = kind === "file" && req.body?.isPrivate === true;
+    res.json(cloudinaryService.createUploadSignature({ kind, filename, isPrivate }));
   } catch (error) {
     next(error);
   }
