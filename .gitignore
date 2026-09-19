@@ -16,3 +16,4 @@ package-lock.json
 
 # Imágenes redimensionadas por import:content antes de subirlas a Cloudinary.
 tmp/
+.env*
