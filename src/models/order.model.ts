@@ -10,6 +10,7 @@ export interface IOrderItem {
 }
 
 export interface IOrder {
+  _id: Types.ObjectId;
   user: Types.ObjectId;
   items: IOrderItem[];
   subtotalCents: number;
@@ -56,4 +57,5 @@ const orderSchema = new Schema<IOrder>(
   { timestamps: true },
 );
 
-export const Order = mongoose.models.Order || mongoose.model<IOrder>("Order", orderSchema);
+export const Order =
+  (mongoose.models.Order as mongoose.Model<IOrder>) || mongoose.model<IOrder>("Order", orderSchema);
