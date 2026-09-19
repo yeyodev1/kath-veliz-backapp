@@ -36,6 +36,10 @@ router.delete("/admin/lessons/:id", admin, contentController.removeLesson);
 router.post("/admin/lessons/:id/video", admin, contentController.createVideo);
 router.get("/admin/lessons/:id/video-status", admin, contentController.videoStatus);
 
+// Vía principal: el navegador sube directo a Cloudinary con esta firma (Vercel
+// corta los cuerpos de más de ~4.5 MB). Las dos rutas multer quedan por compatibilidad.
+router.post("/admin/uploads/signature", admin, uploadController.uploadSignature);
+
 // El guard va antes de multer: nadie sin sesión llega a subir bytes.
 router.post(
   "/admin/uploads/image",
