@@ -1,5 +1,5 @@
 import { env } from "../config/env";
-import { sendEmail, layout } from "./email.service";
+import { sendEmail, layout, EmailMessage } from "./email.service";
 
 /**
  * Correos de captación: recursos gratis, lista de espera, asesoría y avisos de
@@ -243,11 +243,12 @@ export function sendServiceRequestRejectedEmail(
   );
 }
 
-export function sendLiveSessionEmail(
+/** Arma el aviso de clase en vivo sin enviarlo: el envío masivo va por lotes. */
+export function buildLiveSessionEmail(
   student: { name: string; email: string },
   product: { title: string; slug: string },
   session: { title: string; description: string; startsAt: Date; meetUrl: string },
-): Promise<boolean> {
+): EmailMessage {
   const classroomUrl = `${env.FRONTEND_URL.replace(/\/+$/, "")}/aprender/${product.slug}`;
   const body = [
     greeting(student.name),
@@ -264,9 +265,9 @@ export function sendLiveSessionEmail(
     ),
     signature(),
   ].join("");
-  return sendEmail(
-    student.email,
-    `Clase en vivo: ${session.title}`,
-    layout("Nos vemos en la clase en vivo", body),
-  );
+  return {
+    to: student.email,
+    subject: `Clase en vivo: ${session.title}`,
+    html: layout("Nos vemos en la clase en vivo", body),
+  };
 }
