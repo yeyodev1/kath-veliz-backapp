@@ -73,18 +73,36 @@ export async function createVideo(title: string, collectionId?: string): Promise
   }
 }
 
-export async function getVideo(guid: string): Promise<{ status: number; length: number }> {
+export async function getVideo(
+  guid: string,
+): Promise<{ status: number; length: number; encodeProgress: number; messages: string[] }> {
   try {
     const { data } = await getClient().get(`/videos/${guid}`);
-    return { status: Number(data.status ?? 0), length: Number(data.length ?? 0) };
+    return {
+      status: Number(data.status ?? 0),
+      length: Number(data.length ?? 0),
+      encodeProgress: Number(data.encodeProgress ?? 0),
+      // Bunny explica aquí por qué falló un video; el script de carga lo reporta.
+      messages: (data.transcodingMessages ?? []).map((item: any) =>
+        [item?.issueCode, item?.message, item?.value].filter(Boolean).join(" "),
+      ),
+    };
   } catch (error) {
     wrap(error, "consultar el video");
   }
 }
 
 /** Todos los videos de la biblioteca en pocas llamadas: evita una consulta por lección. */
-export async function listVideos(): Promise<{ guid: string; status: number; length: number }[]> {
-  const videos: { guid: string; status: number; length: number }[] = [];
+export async function listVideos(): Promise<
+  { guid: string; title: string; collectionId: string; status: number; length: number }[]
+> {
+  const videos: {
+    guid: string;
+    title: string;
+    collectionId: string;
+    status: number;
+    length: number;
+  }[] = [];
   try {
     for (let page = 1; page <= 10; page++) {
       const { data } = await getClient().get("/videos", {
@@ -94,6 +112,8 @@ export async function listVideos(): Promise<{ guid: string; status: number; leng
       for (const item of items) {
         videos.push({
           guid: item.guid,
+          title: item.title ?? "",
+          collectionId: item.collectionId ?? "",
           status: Number(item.status ?? 0),
           length: Number(item.length ?? 0),
         });
@@ -161,7 +181,20 @@ export async function uploadVideoFile(guid: string, filePath: string): Promise<v
   }
 }
 
-/** Bunny descarga el video desde una URL pública (por ejemplo un enlace directo de Drive). */
+/** Mueve un video que ya existe a una colección. */
+export async function moveVideoToCollection(guid: string, collectionId: string): Promise<void> {
+  try {
+    await getClient().post(`/videos/${guid}`, { collectionId });
+  } catch (error) {
+    wrap(error, "mover el video a la colección");
+  }
+}
+
+/**
+ * Bunny descarga el video desde una URL pública (por ejemplo un enlace directo de Drive).
+ * El endpoint no siempre devuelve el guid: si llega vacío, quien llama lo ubica
+ * por título con `listVideos()`.
+ */
 export async function fetchVideoFromUrl(
   url: string,
   title: string,
@@ -173,9 +206,7 @@ export async function fetchVideoFromUrl(
       { url, title },
       { params: collectionId ? { collectionId } : undefined },
     );
-    const guid = data?.id || data?.guid;
-    if (!guid) throw new CustomError("Bunny Stream no devolvió el id del video", 502, data);
-    return { guid };
+    return { guid: data?.id || data?.guid || "" };
   } catch (error) {
     wrap(error, "traer el video desde la URL");
   }
