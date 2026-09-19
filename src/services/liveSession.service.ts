@@ -12,11 +12,8 @@ import {
   requiredString,
 } from "../utils/input";
 import { isAccessActive } from "./access.service";
-import { sendLiveSessionEmail } from "./leadEmail.service";
-
-// Resend acepta 2 envíos por segundo en el plan base: se manda de a dos y se espera.
-const EMAIL_BATCH_SIZE = 2;
-const EMAIL_BATCH_PAUSE_MS = 1100;
+import { sendEmailBatch } from "./email.service";
+import { buildLiveSessionEmail } from "./leadEmail.service";
 
 function toLiveSession(session: any) {
   const product = session.product;
@@ -104,12 +101,8 @@ export async function deleteLiveSession(id: string): Promise<{ ok: true }> {
   return { ok: true };
 }
 
-function pause(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 /** Avisa de la clase a todas las personas con acceso vigente al producto. */
-export async function notifyLiveSession(id: string): Promise<{ sent: number }> {
+export async function notifyLiveSession(id: string): Promise<{ sent: number; failed: number }> {
   assertObjectId(id, "La clase");
   const session = await LiveSession.findById(id).lean();
   if (!session) throw new CustomError("Clase en vivo no encontrada", 404);
@@ -129,17 +122,9 @@ export async function notifyLiveSession(id: string): Promise<{ sent: number }> {
     recipients.set(user.email, { name: user.name ?? "", email: user.email });
   }
 
-  const list = [...recipients.values()];
-  let sent = 0;
-  for (let index = 0; index < list.length; index += EMAIL_BATCH_SIZE) {
-    const results = await Promise.all(
-      list
-        .slice(index, index + EMAIL_BATCH_SIZE)
-        .map((student) => sendLiveSessionEmail(student, product, session)),
-    );
-    sent += results.filter(Boolean).length;
-    if (index + EMAIL_BATCH_SIZE < list.length) await pause(EMAIL_BATCH_PAUSE_MS);
-  }
-
-  return { sent };
+  // Por lotes (API batch de Resend): de uno en uno, 100+ alumnas no caben en los 60 s de Vercel.
+  const messages = [...recipients.values()].map((student) =>
+    buildLiveSessionEmail(student, product, session),
+  );
+  return sendEmailBatch(messages);
 }
