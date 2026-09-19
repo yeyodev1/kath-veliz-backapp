@@ -10,6 +10,17 @@ export async function create(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/** GET /api/service-requests/:id/prefill — público; solo solicitudes aprobadas. */
+export async function prefill(req: Request, res: Response, next: NextFunction) {
+  try {
+    res
+      .status(200)
+      .json(await serviceRequestService.getServiceRequestPrefill(String(req.params.id)));
+  } catch (error) {
+    next(error);
+  }
+}
+
 /** GET /api/admin/service-requests?status= */
 export async function list(req: Request, res: Response, next: NextFunction) {
   try {
