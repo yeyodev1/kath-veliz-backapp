@@ -189,14 +189,15 @@ export function sendServiceRequestApprovedEmail(
   request: { name: string; email: string },
   product: { title: string },
   paymentUrl: string,
-  adminNote = "",
+  // Mensaje pensado para la persona. La nota interna del panel no va aquí.
+  personalNote = "",
 ): Promise<boolean> {
   const body = [
     greeting(request.name),
     paragraph(
       `Revisé tu solicitud y sí: puedo acompañarte con <strong>${escapeHtml(product.title)}</strong>. Me alegra mucho.`,
     ),
-    adminNote ? paragraph(multiline(adminNote)) : "",
+    personalNote ? paragraph(multiline(personalNote)) : "",
     paragraph(
       "Para reservar tu lugar, completa el pago en este enlace. Necesitas iniciar sesión (o crear tu cuenta) con este mismo correo.",
     ),
@@ -217,7 +218,8 @@ export function sendServiceRequestApprovedEmail(
 export function sendServiceRequestRejectedEmail(
   request: { name: string; email: string },
   product: { title: string },
-  adminNote = "",
+  // Mensaje pensado para la persona. La nota interna del panel no va aquí.
+  personalNote = "",
 ): Promise<boolean> {
   const body = [
     greeting(request.name),
@@ -227,7 +229,7 @@ export function sendServiceRequestRejectedEmail(
     paragraph(
       "Después de revisarla, siento que en este momento la asesoría no es el formato con el que mejor te puedo ayudar, y prefiero decírtelo con honestidad antes que cobrarte por algo que no te va a servir.",
     ),
-    adminNote ? paragraph(multiline(adminNote)) : "",
+    personalNote ? paragraph(multiline(personalNote)) : "",
     paragraph(
       "Lo que sí te puede servir hoy son los cursos y los recursos gratuitos: están pensados para avanzar a tu ritmo.",
     ),
