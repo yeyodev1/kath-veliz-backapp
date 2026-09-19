@@ -7,7 +7,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ message: "No token provided" });
+    res.status(401).json({ message: "Inicia sesión para continuar" });
     return;
   }
 
@@ -18,7 +18,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
     req.user = decoded;
     next();
   } catch {
-    res.status(401).json({ message: "Invalid or expired token" });
+    res.status(401).json({ message: "Tu sesión venció. Vuelve a ingresar." });
     return;
   }
 }
