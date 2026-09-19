@@ -22,6 +22,10 @@ export function isConnected(): boolean {
 export async function dbConnect(): Promise<boolean> {
   if (isConnected()) return true;
 
+  // Una instancia de Vercel puede vivir más que su conexión. Si ya hubo conexión y se
+  // cayó, la promesa vieja sigue "resuelta" y haría creer que hay base: se descarta.
+  if (promesa && mongoose.connection.readyState === 0) promesa = null;
+
   if (!promesa) {
     promesa = mongoose.connect(env.DB_URI, {
       // Fallar rápido y reintentar es mejor que dejar la petición colgada.
