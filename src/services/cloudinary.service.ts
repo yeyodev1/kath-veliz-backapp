@@ -117,6 +117,101 @@ export function uploadRaw(
   });
 }
 
+export const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".heic", ".heif"];
+export const FILE_EXTENSIONS = [
+  ".pdf",
+  ".xlsx",
+  ".xls",
+  ".xlsm",
+  ".csv",
+  ".docx",
+  ".doc",
+  ".pptx",
+  ".ppt",
+  ".zip",
+  ".txt",
+  ".png",
+  ".jpg",
+  ".jpeg",
+];
+
+export type UploadKind = "image" | "file";
+
+export interface UploadSignature {
+  cloudName: string;
+  apiKey: string;
+  timestamp: number;
+  signature: string;
+  folder: string;
+  resourceType: "image" | "raw";
+  type: "upload" | "authenticated";
+  publicId?: string;
+  allowedFormats?: string;
+  uploadUrl: string;
+}
+
+/**
+ * Firma para que el navegador suba directo a Cloudinary.
+ *
+ * En Vercel el cuerpo de una petición no pasa de ~4.5 MB, así que el archivo no
+ * puede viajar por este servidor. Aquí solo se firma: el secreto no sale nunca,
+ * y como carpeta, tipo y public_id van dentro de la firma, el navegador no puede
+ * cambiarlos sin que Cloudinary rechace la subida.
+ */
+export function createUploadSignature(input: {
+  kind: UploadKind;
+  filename: string;
+  isPrivate?: boolean;
+}): UploadSignature {
+  ensureConfig();
+  const timestamp = Math.floor(Date.now() / 1000);
+  const base = {
+    cloudName: env.CLOUDINARY_CLOUD_NAME,
+    apiKey: env.CLOUDINARY_API_KEY,
+    timestamp,
+  };
+
+  if (input.kind === "image") {
+    const allowedFormats = IMAGE_EXTENSIONS.map((ext) => ext.slice(1)).join(",");
+    const signature = cloudinary.utils.api_sign_request(
+      { allowed_formats: allowedFormats, folder: PRODUCT_IMAGES_FOLDER, timestamp },
+      env.CLOUDINARY_API_SECRET,
+    );
+    return {
+      ...base,
+      signature,
+      folder: PRODUCT_IMAGES_FOLDER,
+      resourceType: "image",
+      type: "upload",
+      allowedFormats,
+      uploadUrl: `https://api.cloudinary.com/v1_1/${env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+    };
+  }
+
+  const isPrivate = !!input.isPrivate;
+  const folder = isPrivate ? PRIVATE_FILES_FOLDER : PUBLIC_FILES_FOLDER;
+  const type = isPrivate ? "authenticated" : "upload";
+  const safe = safeFilename(input.filename);
+  const dot = safe.lastIndexOf(".");
+  const name = dot > 0 ? safe.slice(0, dot) : safe;
+  const ext = dot > 0 ? safe.slice(dot) : "";
+  // Sufijo con la hora: dos archivos con el mismo nombre no se pisan.
+  const publicId = `${name}-${Date.now()}${ext}`;
+  const signature = cloudinary.utils.api_sign_request(
+    { folder, public_id: publicId, timestamp, type },
+    env.CLOUDINARY_API_SECRET,
+  );
+  return {
+    ...base,
+    signature,
+    folder,
+    resourceType: "raw",
+    type,
+    publicId,
+    uploadUrl: `https://api.cloudinary.com/v1_1/${env.CLOUDINARY_CLOUD_NAME}/raw/upload`,
+  };
+}
+
 /**
  * URL firmada y de corta duración para bajar un archivo "authenticated".
  * Cloudinary nombra la descarga según el public_id; `filename` viaja aparte al
