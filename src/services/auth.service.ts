@@ -1,11 +1,14 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
 import { isConnected } from "../config/mongo";
 import { CustomError } from "../errors/customError.error";
 import { User, IUser } from "../models/user.model";
+import * as commerceEmail from "./commerceEmail.service";
 
 const TOKEN_TTL = "30d";
+const RESET_TTL_MS = 60 * 60 * 1000;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export interface SessionUser {
@@ -13,15 +16,17 @@ export interface SessionUser {
   email: string;
   name: string;
   phone: string;
+  documentId: string;
   accountType: string;
 }
 
-function sanitize(user: any): SessionUser {
+export function sanitize(user: any): SessionUser {
   return {
     id: user._id.toString(),
     email: user.email,
     name: user.name,
     phone: user.phone,
+    documentId: user.documentId || "",
     accountType: user.accountType,
   };
 }
@@ -86,6 +91,115 @@ export async function changePassword(
   user.password = next;
   await user.save();
   return sanitize(user);
+}
+
+/** Alta pública de alumnos. Siempre crea cuentas customer: el rol no viene del body. */
+export async function register(input: {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}): Promise<{ token: string; user: SessionUser }> {
+  requireDb();
+  const name = input.name.trim();
+  const email = input.email.toLowerCase().trim();
+  if (!name) throw new CustomError("Escribe tu nombre", 400);
+  if (!EMAIL.test(email)) throw new CustomError("Correo inválido", 400);
+  if (input.password.length < 8) {
+    throw new CustomError("La contraseña debe tener al menos 8 caracteres", 400);
+  }
+
+  if (await User.exists({ email })) {
+    throw new CustomError("Ya existe una cuenta con ese correo. Inicia sesión.", 409);
+  }
+
+  const user = await User.create({
+    email,
+    password: input.password,
+    name,
+    phone: (input.phone || "").trim(),
+    accountType: "customer",
+    lastLoginAt: new Date(),
+  });
+
+  await commerceEmail.sendWelcomeEmail({ email: user.email, name: user.name });
+  return { token: signToken(user), user: sanitize(user) };
+}
+
+/** Datos de la cuenta. Solo pisa los campos que llegan. */
+export async function updateProfile(
+  id: string,
+  input: { name?: unknown; phone?: unknown; documentId?: unknown },
+): Promise<SessionUser> {
+  requireDb();
+  const user = await User.findById(id);
+  if (!user) throw new CustomError("Usuario no encontrado", 404);
+
+  if (input.name !== undefined) {
+    const name = String(input.name).trim();
+    if (!name) throw new CustomError("Escribe tu nombre", 400);
+    user.name = name;
+  }
+  if (input.phone !== undefined) user.phone = String(input.phone).trim();
+  if (input.documentId !== undefined) user.documentId = String(input.documentId).trim();
+
+  await user.save();
+  return sanitize(user);
+}
+
+function hashToken(token: string): string {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
+/**
+ * Genera un token para definir o restablecer la contraseña y devuelve el valor
+ * en claro, que solo viaja en el correo. En la base queda el hash: quien lea
+ * la colección no puede usarlo.
+ */
+export async function issuePasswordToken(userId: string, ttlMs = RESET_TTL_MS): Promise<string> {
+  const token = crypto.randomBytes(32).toString("hex");
+  await User.updateOne(
+    { _id: userId },
+    { resetPasswordToken: hashToken(token), resetPasswordExpires: new Date(Date.now() + ttlMs) },
+  );
+  return token;
+}
+
+/** No revela si el correo existe: el controller responde ok en cualquier caso. */
+export async function forgotPassword(email: string): Promise<void> {
+  requireDb();
+  const user = await User.findOne({ email: email.toLowerCase().trim() });
+  if (!user || !user.isActive) return;
+
+  const token = await issuePasswordToken(user._id.toString());
+  await commerceEmail.sendResetPasswordEmail({ to: user.email, name: user.name, token });
+}
+
+export async function resetPassword(
+  token: string,
+  password: string,
+): Promise<{ token: string; user: SessionUser }> {
+  requireDb();
+  if (!token) throw new CustomError("El enlace no es válido", 400);
+  if (password.length < 8) {
+    throw new CustomError("La contraseña debe tener al menos 8 caracteres", 400);
+  }
+
+  const user = await User.findOne({
+    resetPasswordToken: hashToken(token),
+    resetPasswordExpires: { $gt: new Date() },
+  }).select("+password");
+  if (!user || !user.isActive) {
+    throw new CustomError("El enlace ya no es válido o venció. Pide uno nuevo.", 400);
+  }
+
+  user.password = password;
+  user.resetPasswordToken = null;
+  user.resetPasswordExpires = null;
+  user.lastLoginAt = new Date();
+  await user.save();
+
+  return { token: signToken(user), user: sanitize(user) };
 }
 
 export async function createUser(input: {
