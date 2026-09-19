@@ -23,7 +23,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Request Flow
 
-`Express app → CORS → JSON parser (50mb) → /api router → handlers → globalErrorHandler`
+`Express app → CORS → JSON parser (4mb; Vercel corta en ~4.5 MB) → /api router → handlers → globalErrorHandler`
 
 ### Layered Structure
 
@@ -38,6 +38,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Errores:** `throw new CustomError("Mensaje en español", 404)`; `globalErrorHandler` responde `{ message }` y avisa a Slack en 5xx.
 - **Auth:** `authMiddleware` verifica el Bearer y deja `req.user` (`AuthRequest`). Gates de rol van después (`adminMiddleware`).
 - **Respuestas:** cuerpo desnudo (`res.json(item)`), paginación `{ items, total, page, pages }`, login `{ token, user }`.
+- **Archivos:** el navegador sube directo a Cloudinary con `POST /admin/uploads/signature` (firma) y los videos directo a Bunny por TUS. Ningún archivo pasa por el API: en Vercel el cuerpo no puede pasar de ~4.5 MB ni la función de 60 s.
+- **Correos masivos:** `sendEmailBatch` (API batch de Resend, 100 por llamada), nunca un bucle de `sendEmail`.
 - **Mongo serverless:** `dbConnect()` cachea la promesa; nunca `process.exit` en Vercel.
 
 ## Convenciones
