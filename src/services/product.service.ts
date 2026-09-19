@@ -151,6 +151,14 @@ export async function listAdminProducts() {
   return products.map((product) => toAdminProduct(product, stats.get(product._id.toString())));
 }
 
+export async function getAdminProduct(id: string) {
+  assertObjectId(id, "El producto");
+  const product = await Product.findById(id).lean();
+  if (!product) throw new CustomError("Producto no encontrado", 404);
+  const stats = await contentService.lessonStatsByProduct([product._id]);
+  return toAdminProduct(product, stats.get(product._id.toString()));
+}
+
 /** Slug único: si choca se le agrega -2, -3… */
 async function uniqueSlug(base: string, excludeId?: string): Promise<string> {
   const root = slugify(base).replace(/^-+|-+$/g, "");
