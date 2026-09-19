@@ -44,7 +44,9 @@ export function createApp() {
   const app = express();
 
   app.use(cors(corsOptions));
-  app.use(express.json({ limit: "50mb" }));
+  // Vercel corta cualquier cuerpo de más de ~4.5 MB antes de llegar aquí. Ningún JSON del
+  // API se acerca a eso: los archivos suben directo a Cloudinary y los videos a Bunny.
+  app.use(express.json({ limit: "4mb" }));
 
   app.get("/", (_req, res) => {
     res.send("Server is alive");
