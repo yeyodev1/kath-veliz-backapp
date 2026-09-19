@@ -31,7 +31,11 @@ export function uploadBuffer(
   ensureConfig();
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: "image", transformation: [{ quality: "auto", fetch_format: "auto" }] },
+      {
+        folder,
+        resource_type: "image",
+        transformation: [{ quality: "auto", fetch_format: "auto" }],
+      },
       (error, result?: UploadApiResponse) => {
         if (error || !result) return reject(error || new Error("Cloudinary sin respuesta"));
         resolve({ url: result.secure_url, publicId: result.public_id });
@@ -58,4 +62,81 @@ export async function uploadImage(
 export async function deleteImage(publicId: string): Promise<void> {
   ensureConfig();
   await cloudinary.uploader.destroy(publicId);
+}
+
+export const PRODUCT_IMAGES_FOLDER = "kath-veliz/productos";
+const PRIVATE_FILES_FOLDER = "kath-veliz/descargables";
+const PUBLIC_FILES_FOLDER = "kath-veliz/adjuntos";
+
+// Lo justo para que la persona haga clic y empiece la descarga.
+const DOWNLOAD_URL_TTL_SECONDS = 10 * 60;
+
+/** Nombre seguro para el public_id. En raw la extensión forma parte del id. */
+function safeFilename(filename: string): string {
+  const clean = filename
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9._-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  return clean || "archivo";
+}
+
+/**
+ * Sube un archivo que no es imagen (Excel, PDF, zip).
+ * Los privados quedan como "authenticated": su URL no abre sin firma, así el
+ * descargable de pago no se puede compartir con solo copiar el enlace.
+ */
+export function uploadRaw(
+  buffer: Buffer,
+  filename: string,
+  options: { isPrivate?: boolean } = {},
+): Promise<{ url: string; publicId: string; filename: string }> {
+  ensureConfig();
+  const isPrivate = !!options.isPrivate;
+  const safe = safeFilename(filename);
+  const dot = safe.lastIndexOf(".");
+  const base = dot > 0 ? safe.slice(0, dot) : safe;
+  const ext = dot > 0 ? safe.slice(dot) : "";
+
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: isPrivate ? PRIVATE_FILES_FOLDER : PUBLIC_FILES_FOLDER,
+        resource_type: "raw",
+        type: isPrivate ? "authenticated" : "upload",
+        // Sufijo con la hora: dos archivos con el mismo nombre no se pisan.
+        public_id: `${base}-${Date.now()}${ext}`,
+      },
+      (error, result?: UploadApiResponse) => {
+        if (error || !result) return reject(error || new Error("Cloudinary sin respuesta"));
+        resolve({ url: result.secure_url, publicId: result.public_id, filename });
+      },
+    );
+    stream.end(buffer);
+  });
+}
+
+/**
+ * URL firmada y de corta duración para bajar un archivo "authenticated".
+ * Cloudinary nombra la descarga según el public_id; `filename` viaja aparte al
+ * front para mostrarlo, no cambia la URL.
+ */
+export function privateDownloadUrl(publicId: string, _filename = ""): string {
+  ensureConfig();
+  // En raw el formato va dentro del public_id; se pasa vacío para que no lo duplique.
+  return cloudinary.utils.private_download_url(publicId, "", {
+    resource_type: "raw",
+    type: "authenticated",
+    expires_at: Math.floor(Date.now() / 1000) + DOWNLOAD_URL_TTL_SECONDS,
+    attachment: true,
+  });
+}
+
+export async function deleteRaw(publicId: string, isPrivate = false): Promise<void> {
+  ensureConfig();
+  await cloudinary.uploader.destroy(publicId, {
+    resource_type: "raw",
+    type: isPrivate ? "authenticated" : "upload",
+  });
 }
