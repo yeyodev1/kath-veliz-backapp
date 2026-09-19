@@ -15,7 +15,10 @@ function toServiceRequest(request: any) {
   const populated = product && typeof product === "object" && "title" in product;
   return {
     id: request._id.toString(),
-    product: populated ? product._id.toString() : product.toString(),
+    // El panel pinta el nombre: la referencia viaja poblada cuando se pudo poblar.
+    product: populated
+      ? { id: product._id.toString(), title: product.title, slug: product.slug }
+      : product.toString(),
     productTitle: populated ? product.title : "",
     productSlug: populated ? product.slug : "",
     user: request.user ? request.user.toString() : null,
