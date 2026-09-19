@@ -42,6 +42,11 @@ interface ManifestLesson {
   isFreePreview?: boolean;
   /** Id del archivo en Drive: Bunny lo trae desde ahí. */
   driveId?: string;
+  /**
+   * Ruta del video en disco, relativa a la raíz. Si el archivo existe gana sobre driveId:
+   * sirve cuando Drive agota su cuota anónima y los videos se bajan con sesión iniciada.
+   */
+  videoLocalPath?: string;
   /** Título único del video en Bunny; con él se ubica su guid tras el fetch. */
   bunnyTitle?: string;
   /** guid de un video que ya está en Bunny: se reutiliza, no se vuelve a subir. */
@@ -383,7 +388,11 @@ async function findVideoByTitle(title: string, attempts: number): Promise<BunnyV
  * Deja cada lección con su guid de Bunny. No espera el procesamiento: eso lo
  * hace waitForVideos, así todos los fetch corren en paralelo del lado de Bunny.
  */
-async function attachVideos(entry: ManifestProduct, productId: mongoose.Types.ObjectId) {
+async function attachVideos(
+  entry: ManifestProduct,
+  productId: mongoose.Types.ObjectId,
+  root: string,
+) {
   const withVideo = entry.modules.flatMap((moduleEntry) =>
     moduleEntry.lessons
       .filter((lessonEntry) => lessonEntry.driveId || lessonEntry.bunnyVideoId)
@@ -441,6 +450,15 @@ async function attachVideos(entry: ManifestProduct, productId: mongoose.Types.Ob
           await bunnyService.deleteVideo(found.guid);
           console.log(`[video] ${name}: se borró el intento fallido ${found.guid}`);
           found = null;
+        }
+        const localFile = lessonEntry.videoLocalPath
+          ? path.resolve(root, lessonEntry.videoLocalPath)
+          : "";
+        if (!found && localFile && fs.existsSync(localFile)) {
+          const created = await bunnyService.createVideo(title, collectionId || undefined);
+          console.log(`[video] ${name}: subiendo desde disco ${path.basename(localFile)}…`);
+          await bunnyService.uploadVideoFile(created.guid, localFile);
+          found = { guid: created.guid, title, collectionId, status: 1, length: 0 };
         }
         if (!found) {
           await assertDriveServesVideo(lessonEntry.driveId as string);
@@ -551,7 +569,7 @@ async function main() {
       const product = await importProduct(entry, root);
       productIds.push(product._id);
       await importModules(entry, product._id, root);
-      await attachVideos(entry, product._id);
+      await attachVideos(entry, product._id, root);
     } catch (error) {
       logFailed("producto", entry.slug, error);
     }
