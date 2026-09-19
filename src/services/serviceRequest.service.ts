@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { env } from "../config/env";
 import { CustomError } from "../errors/customError.error";
 import {
@@ -100,6 +101,33 @@ export async function createServiceRequest(body: any): Promise<{ ok: true }> {
   ]);
 
   return { ok: true };
+}
+
+/**
+ * Datos mínimos para precargar el checkout desde el enlace de pago del correo.
+ * Es público (la persona aún no tiene cuenta), así que responde SOLO por solicitudes
+ * aprobadas y nunca devuelve respuestas de la encuesta ni notas internas.
+ * Cualquier otro caso es un 404 idéntico: no se revela si el id existe.
+ */
+export async function getServiceRequestPrefill(id: string) {
+  const notFound = new CustomError("No encontramos esta solicitud", 404);
+  if (!Types.ObjectId.isValid(id)) throw notFound;
+
+  const request = await ServiceRequest.findOne({ _id: id, status: "approved" })
+    .select("name email phone status product")
+    .lean();
+  if (!request) throw notFound;
+
+  const product = await Product.findById(request.product).select("slug").lean();
+  if (!product) throw notFound;
+
+  return {
+    name: request.name,
+    email: request.email,
+    phone: request.phone,
+    productSlug: product.slug,
+    status: request.status,
+  };
 }
 
 /* ---------- Panel ---------- */
