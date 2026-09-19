@@ -38,7 +38,12 @@ function toCoupon(coupon: any) {
     id: coupon._id.toString(),
     code: coupon.code,
     percentOff: coupon.percentOff,
-    product: product ? (populated ? product._id.toString() : product.toString()) : null,
+    // El panel pinta el nombre: la referencia viaja poblada cuando se pudo poblar.
+    product: product
+      ? populated
+        ? { id: product._id.toString(), title: product.title, slug: product.slug }
+        : product.toString()
+      : null,
     productTitle: populated ? product.title : "",
     expiresAt: coupon.expiresAt,
     maxUses: coupon.maxUses,
@@ -120,7 +125,7 @@ export async function ensureWaitlistCoupon(product: {
 /* ---------- Panel ---------- */
 
 export async function listCoupons() {
-  const coupons = await Coupon.find().sort({ createdAt: -1 }).populate("product", "title").lean();
+  const coupons = await Coupon.find().sort({ createdAt: -1 }).populate("product", "title slug").lean();
   return coupons.map(toCoupon);
 }
 
@@ -167,7 +172,7 @@ export async function createCoupon(body: any) {
     throw new CustomError("Ya existe un cupón con ese código", 409);
   }
   const coupon = await Coupon.create(data);
-  return toCoupon(await coupon.populate("product", "title"));
+  return toCoupon(await coupon.populate("product", "title slug"));
 }
 
 export async function updateCoupon(id: string, body: any) {
@@ -178,7 +183,7 @@ export async function updateCoupon(id: string, body: any) {
   }
 
   const coupon = await Coupon.findByIdAndUpdate(id, data, { new: true, runValidators: true })
-    .populate("product", "title")
+    .populate("product", "title slug")
     .lean();
   if (!coupon) throw new CustomError("Cupón no encontrado", 404);
   return toCoupon(coupon);
