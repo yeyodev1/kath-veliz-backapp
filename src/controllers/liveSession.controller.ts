@@ -39,7 +39,7 @@ export async function remove(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-/** POST /api/admin/live-sessions/:id/notify → { sent } */
+/** POST /api/admin/live-sessions/:id/notify → { sent, failed } */
 export async function notify(req: Request, res: Response, next: NextFunction) {
   try {
     res.status(200).json(await liveSessionService.notifyLiveSession(String(req.params.id)));
