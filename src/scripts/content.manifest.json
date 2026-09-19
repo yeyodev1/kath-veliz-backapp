@@ -1,0 +1,410 @@
+{
+  "nota": "Mapeo definitivo del contenido de Kath Veliz. Las rutas son relativas a localRoot (se puede cambiar con --root=<carpeta>). Los videos no se descargan: Bunny los trae desde Drive por driveId. Sin secretos.",
+  "localRoot": "/Users/yeyodev/Downloads/kath-veliz",
+  "driveRootId": "14NgwoaZzny-Qa6en73y03V-N__HY2u1w",
+  "products": [
+    {
+      "slug": "tu-punto-de-partida",
+      "type": "course",
+      "order": 1,
+      "title": "Tu Punto de Partida",
+      "subtitle": "El curso de finanzas personales DESDE CERO que nadie nos dio en nuestros 20s.",
+      "description": "Imagina tener un curso que por fin te explique cómo organizar tu dinero desde CERO para poder alcanzar tu metas...\n\nDeja de sentir que estás luchando para que tu sueldo te dure hasta que se acabe el mes. No estás aquí para seguir endeudada, estás aquí para aprender a tomar el control de tu dinero y el mejor momento para empezar es AHORA.\n\nEste curso está diseñado para que, sin importar tu nivel de conocimiento, puedas tomar el control de tu dinero de manera sencilla, práctica y con términos fáciles de entender.\n\nAl finalizar, tendrás un presupuesto personalizado que podrás aplicar durante un año para mejorar tu relación con el dinero.",
+      "highlights": [
+        "22 clases pregrabadas",
+        "2 sesiones en vivo de 90min con Kath",
+        "5 retos para que pongas todo en práctica (uno por módulo)",
+        "1 plantilla automatizada de Excel",
+        "Respuestas a tus preguntas en la plataforma",
+        "Acceso al curso durante 1 año"
+      ],
+      "audience": [],
+      "faqs": [],
+      "priceCents": 0,
+      "saleMode": "waitlist",
+      "accessDurationDays": 365,
+      "isPublished": true,
+      "cover": "Curso Tu Punto de Partida 2025/Sesion de fotos/74M01074.jpg",
+      "modules": [
+        {
+          "title": "Módulo 1: Mentalidad financiera",
+          "order": 1,
+          "description": "Bienvenida, como va a funcionar el curso, y 5 clases sobre la mentalidad financiera, tu relación con el dinero y la importancia de pensar en el largo plazo.",
+          "lessons": [
+            {
+              "title": "¡Bienvenida a Tu Punto de Partida! Cómo vamos a trabajar",
+              "order": 1,
+              "isPublished": false,
+              "videoPendiente": "Modulo 1 - Clase 1.mp4",
+              "attachments": [
+                {
+                  "name": "Guía Tu Punto de Partida 2025.pdf",
+                  "path": "Curso Tu Punto de Partida 2025/Guía Tu Punto de Partida 2025.pdf"
+                }
+              ]
+            },
+            {
+              "title": "El poder del mindset financiero",
+              "order": 2,
+              "isPublished": false,
+              "videoPendiente": "Modulo 1 - Clase 2 Final.mp4"
+            },
+            {
+              "title": "Clase 3",
+              "order": 3,
+              "isPublished": false,
+              "videoPendiente": "Modulo 1 - Clase 3.mp4"
+            },
+            {
+              "title": "¿Cuál es tu relación con el dinero?",
+              "order": 4,
+              "isPublished": false,
+              "videoPendiente": "Modulo 1 - Clase 4.mp4"
+            },
+            {
+              "title": "Reto: tu relación actual con el dinero",
+              "order": 5,
+              "isPublished": false,
+              "videoPendiente": "Modulo 1 - Clase 5.mp4"
+            }
+          ]
+        },
+        {
+          "title": "Módulo 2: Ingresos y ahorro",
+          "order": 2,
+          "description": "5 clases sobre Ingresos y Ahorro. la fórmula del ahorro, cómo empezar a ahorrar, cuánto ahorrar y qué herramientas tengo para hacerlo.",
+          "lessons": [
+            {
+              "title": "Clase 1",
+              "order": 1,
+              "isPublished": false,
+              "videoPendiente": "Modulo 2 - Clase 1.mp4"
+            },
+            {
+              "title": "Clase 2",
+              "order": 2,
+              "isPublished": false,
+              "videoPendiente": "Modulo 2 - Clase 2.mp4"
+            },
+            {
+              "title": "Clase 3",
+              "order": 3,
+              "isPublished": false,
+              "videoPendiente": "Modulo 2 - Clase 3.mp4"
+            },
+            {
+              "title": "Clase 4",
+              "order": 4,
+              "isPublished": false,
+              "videoPendiente": "Modulo 2 - Clase 4.mp4"
+            },
+            {
+              "title": "Clase 5",
+              "order": 5,
+              "isPublished": false,
+              "videoPendiente": "Modulo 2 - Clase 5.mp4"
+            }
+          ]
+        },
+        {
+          "title": "Módulo 3: Gastos y control financiero",
+          "order": 3,
+          "description": "4 clases sobre gastos y control financiero. Tipos de gastos, errores que cometemos y consejos para evitar las compras compulsivas",
+          "lessons": [
+            {
+              "title": "Tipos de gastos",
+              "order": 1,
+              "isPublished": false,
+              "videoPendiente": "Modulo 3 - Clase 1.mp4",
+              "attachments": [
+                {
+                  "name": "Cuanto cuesta tu vida hoy.xlsx",
+                  "path": "Curso Tu Punto de Partida 2025/Modulo 3 - Gastos y Control/Cuanto cuesta tu vida hoy.xlsx"
+                }
+              ]
+            },
+            {
+              "title": "Caro vs. costoso",
+              "order": 2,
+              "isPublished": false,
+              "videoPendiente": "Modulo 3 - Clase 2.mp4"
+            },
+            {
+              "title": "Clase 3",
+              "order": 3,
+              "isPublished": false,
+              "videoPendiente": "Modulo 3 - Clase 3.mp4"
+            },
+            {
+              "title": "Estrategias para evitar gastar de más",
+              "order": 4,
+              "isPublished": false,
+              "videoPendiente": "Modulo 3 - Clase 4.mp4"
+            }
+          ]
+        },
+        {
+          "title": "Módulo 4: Deudas y tarjetas de crédito",
+          "order": 4,
+          "description": "4 clases sobre deudas y técnicas para empezar a pagar tus deudas + 2 clases sobre tarjetas de crédito y cómo funcionan.",
+          "lessons": [
+            {
+              "title": "Entendiendo las deudas",
+              "order": 1,
+              "isPublished": false,
+              "videoPendiente": "Modulo 4 - Clase 1.mp4"
+            },
+            {
+              "title": "Estrategias para salir de deudas",
+              "order": 2,
+              "isPublished": false,
+              "videoPendiente": "Modulo 4 - Clase 2.mp4"
+            },
+            {
+              "title": "Qué hacer si ya estás endeudada",
+              "order": 3,
+              "isPublished": false,
+              "videoPendiente": "Modulo 4 - Clase 3.mp4"
+            },
+            {
+              "title": "Cómo funcionan las tarjetas de crédito",
+              "order": 4,
+              "isPublished": false,
+              "videoPendiente": "Modulo 4 - Clase 4.mp4"
+            },
+            {
+              "title": "Qué tarjeta es la mejor para ti",
+              "order": 5,
+              "isPublished": false,
+              "videoPendiente": "Modulo 4 - Clase 5.mp4"
+            },
+            {
+              "title": "¿Qué pasa si no pagas la tarjeta?",
+              "order": 6,
+              "isPublished": false,
+              "videoPendiente": "Modulo 4 - Clase 6.mp4"
+            },
+            {
+              "title": "Estrategias para usar tu tarjeta",
+              "order": 7,
+              "isPublished": false,
+              "videoPendiente": "Modulo 4 - Clase 7.mp4"
+            }
+          ]
+        },
+        {
+          "title": "Módulo 5: Tu presupuesto",
+          "order": 5,
+          "description": "4 clases sobre formas y las diferentes opciones que tienes disponibles para presupuestar.",
+          "lessons": [
+            {
+              "title": "Clase 1",
+              "order": 1,
+              "isPublished": false,
+              "videoPendiente": "Modulo 5 - Clase 1.mp4"
+            },
+            {
+              "title": "Clase 2",
+              "order": 2,
+              "isPublished": false,
+              "videoPendiente": "Modulo 5 - Clase 2.mp4"
+            },
+            {
+              "title": "Clase 3",
+              "order": 3,
+              "isPublished": false,
+              "videoPendiente": "Modulo 5 - Clase 3.mp4"
+            },
+            {
+              "title": "Tutorial: cómo usar la Plantilla Presupuesto Inteligente",
+              "order": 4,
+              "isPublished": false,
+              "videoPendiente": "Modulo 5 - Tutorial Plantilla.mp4",
+              "attachments": [
+                {
+                  "name": "Plantilla Presupuesto Inteligente - Ejercicio clase en vivo.xlsx",
+                  "path": "Curso Tu Punto de Partida 2025/Modulo 5 - Riqueza y Presupuesto/Plantilla Presupuesto Inteligente - Ejercicio clase en vivo.xlsx"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Clases en vivo 2025 (grabaciones)",
+          "order": 6,
+          "description": "",
+          "lessons": [
+            {
+              "title": "Clase en vivo: Cuánto cuesta tu estilo de vida hoy",
+              "order": 1,
+              "isPublished": false,
+              "videoPendiente": "Modulo 3 - Clase en vivo.mp4"
+            },
+            {
+              "title": "Clase en vivo: llenamos la Plantilla de presupuesto",
+              "order": 2,
+              "isPublished": false,
+              "videoPendiente": "Modulo 5 - Clase en vivo.mp4"
+            },
+            {
+              "title": "Clase de cierre Tu Punto de Partida 2025",
+              "order": 3,
+              "isPublished": false,
+              "videoPendiente": "video1765446350.mp4"
+            }
+          ]
+        },
+        {
+          "title": "Material adicional",
+          "order": 7,
+          "description": "",
+          "lessons": [
+            {
+              "title": "Masterclass Tu Punto de Partida",
+              "order": 1,
+              "isPublished": true,
+              "driveId": "1-3gBwQpRPkXiUqGvDm1SwKwipLgzapt-",
+              "bunnyTitle": "tu-punto-de-partida | Masterclass Tu Punto de Partida"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "curso-tarjetas-de-credito",
+      "type": "course",
+      "order": 2,
+      "title": "Curso de tarjetas de crédito",
+      "subtitle": "",
+      "description": "",
+      "highlights": [],
+      "audience": [],
+      "faqs": [],
+      "priceCents": 0,
+      "saleMode": "closed",
+      "accessDurationDays": null,
+      "isPublished": false,
+      "cover": "Curso Tu Punto de Partida 2025/Sesion de fotos/74M01120.jpg",
+      "modules": [
+        {
+          "title": "Clases",
+          "order": 1,
+          "description": "",
+          "lessons": [
+            {
+              "title": "Clase Bienvenida 2025",
+              "order": 1,
+              "isPublished": true,
+              "bunnyVideoId": "af326f64-d66d-476b-bfbe-c35bac3a8703"
+            },
+            {
+              "title": "Cómo elegir y solicitar tu tarjeta",
+              "order": 2,
+              "isPublished": true,
+              "driveId": "1dXg0hY9gr01kLEKBERutRfQ8gsueZgbo",
+              "bunnyTitle": "curso-tarjetas-de-credito | Cómo elegir y solicitar tu tarjeta"
+            },
+            {
+              "title": "El pago mínimo",
+              "order": 3,
+              "isPublished": true,
+              "driveId": "1PBKxfjH3-aiEYxCZTcJFAGK4D3-cfBpK",
+              "bunnyTitle": "curso-tarjetas-de-credito | El pago mínimo"
+            },
+            {
+              "title": "Score crediticio",
+              "order": 4,
+              "isPublished": true,
+              "driveId": "1aGgr1YPo_ropXANqc8kQf1Tjb9FE-bUQ",
+              "bunnyTitle": "curso-tarjetas-de-credito | Score crediticio"
+            },
+            {
+              "title": "Clase de cierre: mi estrategia con tarjetas",
+              "order": 5,
+              "isPublished": true,
+              "driveId": "1M7pJGtfuY92HQjY4kCaffYFVeDaPPwaW",
+              "bunnyTitle": "curso-tarjetas-de-credito | Clase de cierre: mi estrategia con tarjetas"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "plantilla-presupuesto-inteligente",
+      "type": "download",
+      "order": 3,
+      "title": "Plantilla Presupuesto Inteligente",
+      "subtitle": "",
+      "description": "",
+      "highlights": [],
+      "audience": [],
+      "faqs": [],
+      "priceCents": 0,
+      "saleMode": "closed",
+      "accessDurationDays": null,
+      "isPublished": false,
+      "cover": "Curso Tu Punto de Partida 2025/Sesion de fotos/74M01106.jpg",
+      "downloadFile": "Curso Tu Punto de Partida 2025/Plantilla Presupuesto Inteligente.xlsx",
+      "modules": [
+        {
+          "title": "Tutorial",
+          "order": 1,
+          "description": "",
+          "lessons": [
+            {
+              "title": "Cómo usar tu plantilla",
+              "order": 1,
+              "isPublished": false,
+              "videoPendiente": "Modulo 5 - Tutorial Plantilla.mp4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "asesoria-personalizada",
+      "type": "service",
+      "order": 4,
+      "title": "Asesoría 1:1 con Kath",
+      "subtitle": "Llegaste al lugar indicado para poder retomar el control de tus finanzas.",
+      "description": "Probablemente en el pasado tomaste malas decisiones financieras, tal vez gastaste de más y tienes la tarjeta de crédito reventada o tal vez estás recibiendo tu primer sueldo y no tienes idea de qué hacer con él.\n\nSeguro a veces te da vergüenza hablar todos esos problemas e inclusive a veces no te dejan dormir. Entiendo completamente lo que se siente querer salir de ese hueco en el que te sientes atrapada y sentir que por más que lo intentas no logras que nada cambie.\n\nY si eres de esas personas que va directo al grano y quiere tener respuestas inmediatas, entonces esta es tu opción ideal. Esto no es un curso para muchas personas, sino una asesoría personalizada en donde trabajo únicamente contigo y te enseño el método que yo seguí que me ayudo a ponerle orden a mis finanzas.\n\nEs un programa de 15 días en donde voy a entender cual es el estilo de vida que quisieras vivir y diseñaré para ti tu primer presupuesto para que puedas alcanzar esas metas de vida que tienes y que no has logrado alcanzar.",
+      "highlights": [
+        "1 SESIÓN GRATUITA en vivo conmigo de 15min para conocernos",
+        "2 SESIONES EN VIVO de hasta 90min cada una",
+        "DIAGNÓSTICO de tu situación actual en donde entenderemos en donde estás hoy y a donde quieres llegar.",
+        "Un ANÁLISIS PERSONALIZADO de los últimos estados de cuenta de tus tarjetas de crédito",
+        "Una EVALUACIÓN GENERAL en donde podrás ver si tu estilo de vida se ajusta a la regla 50-30-20",
+        "Ejercicio guiado con Kath: CUANTO CUESTA MI VIDA HOY en donde harás una evaluación completa de tus gastos semanales, mensuales y anuales.",
+        "Seguimiento constante en donde yo estaré pendiente de ti a lo largo de TODO el proceso. Tendrás comunicación directa conmigo para que puedas hacerme todas las preguntas que necesites.",
+        "Espacio para personalizar tu presupuesto y ajustarlo a tu estilo de vida. Podremos ajustarlo hasta que sientas que es un presupuesto realista.",
+        "BONUS #1: Te llegará una plantilla automatizada de PRESUPUESTO INTELIGENTE con la que podrás darle seguimiento a tu presupuesto durante un año COMPLETO!",
+        "BONUS #2: Tutorial pregrabado en donde te enseño a usar la plantilla de presupuesto inteligente.",
+        "BONUS #3: Plantilla automatizada \"Cuanto cuesta mi vida hoy\" para que puedas repetir el ejercicio las veces que necesites.",
+        "BONUS #4: Recibirás la Guía \"Ahorro MODE ON\" diseñada por mi, en donde te doy diferentes tips para que puedas mantener un ahorro constante"
+      ],
+      "audience": [
+        "Estas perdid@ con el manejo de tu dinero",
+        "Quieres aprender a hacer tu primer presupuesto",
+        "Quieres entender cuáles son tus hábitos de consumo y a donde se va tu dinero",
+        "Quisieres saber cuanto puedes gastar sin tener miedo a endeudarte",
+        "Quieres dejar de preocuparte por si vas a llegar a fin de mes",
+        "Quieres crear tu primer plan de ahorro"
+      ],
+      "faqs": [],
+      "priceCents": 20000,
+      "saleMode": "open",
+      "accessDurationDays": null,
+      "isPublished": true,
+      "cover": "Curso Tu Punto de Partida 2025/Sesion de fotos/74M00947.jpg",
+      "surveyQuestions": [
+        {
+          "label": "Cuéntame brevemente tu situación financiera actual y qué te gustaría lograr con la asesoría",
+          "type": "textarea",
+          "options": [],
+          "required": true
+        }
+      ],
+      "modules": []
+    }
+  ]
+}
