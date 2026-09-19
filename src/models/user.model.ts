@@ -9,6 +9,8 @@ export interface IUser {
   password: string;
   name: string;
   phone: string;
+  /** Cédula: la pide Payphone en cada cobro. */
+  documentId: string;
   accountType: AccountType;
   isActive: boolean;
   lastLoginAt: Date | null;
@@ -25,6 +27,7 @@ const userSchema = new Schema<IUser>(
     password: { type: String, required: true, select: false },
     name: { type: String, default: "" },
     phone: { type: String, default: "" },
+    documentId: { type: String, default: "" },
     accountType: { type: String, enum: ACCOUNT_TYPES, default: "customer" },
     isActive: { type: Boolean, default: true },
     lastLoginAt: { type: Date, default: null },
