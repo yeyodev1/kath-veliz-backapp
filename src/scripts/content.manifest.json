@@ -264,7 +264,8 @@
               "order": 1,
               "isPublished": true,
               "driveId": "1-3gBwQpRPkXiUqGvDm1SwKwipLgzapt-",
-              "bunnyTitle": "tu-punto-de-partida | Masterclass Tu Punto de Partida"
+              "bunnyTitle": "tu-punto-de-partida | Masterclass Tu Punto de Partida",
+              "videoLocalPath": "videos/Masterclass Tu Punto de Partida.mp4"
             }
           ]
         }
@@ -302,28 +303,32 @@
               "order": 2,
               "isPublished": true,
               "driveId": "1dXg0hY9gr01kLEKBERutRfQ8gsueZgbo",
-              "bunnyTitle": "curso-tarjetas-de-credito | Cómo elegir y solicitar tu tarjeta"
+              "bunnyTitle": "curso-tarjetas-de-credito | Cómo elegir y solicitar tu tarjeta",
+              "videoLocalPath": "videos/Clases en vivo con Kath 1.mp4"
             },
             {
               "title": "El pago mínimo",
               "order": 3,
               "isPublished": true,
               "driveId": "1PBKxfjH3-aiEYxCZTcJFAGK4D3-cfBpK",
-              "bunnyTitle": "curso-tarjetas-de-credito | El pago mínimo"
+              "bunnyTitle": "curso-tarjetas-de-credito | El pago mínimo",
+              "videoLocalPath": "videos/Clase 2 en vivo con Kath.mp4"
             },
             {
               "title": "Score crediticio",
               "order": 4,
               "isPublished": true,
               "driveId": "1aGgr1YPo_ropXANqc8kQf1Tjb9FE-bUQ",
-              "bunnyTitle": "curso-tarjetas-de-credito | Score crediticio"
+              "bunnyTitle": "curso-tarjetas-de-credito | Score crediticio",
+              "videoLocalPath": "videos/Clase 4 -  Score Crediticio.mp4"
             },
             {
               "title": "Clase de cierre: mi estrategia con tarjetas",
               "order": 5,
               "isPublished": true,
               "driveId": "1M7pJGtfuY92HQjY4kCaffYFVeDaPPwaW",
-              "bunnyTitle": "curso-tarjetas-de-credito | Clase de cierre: mi estrategia con tarjetas"
+              "bunnyTitle": "curso-tarjetas-de-credito | Clase de cierre: mi estrategia con tarjetas",
+              "videoLocalPath": "videos/Clase cierre DMAC.mp4"
             }
           ]
         }
