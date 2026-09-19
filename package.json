@@ -14,6 +14,7 @@
     "start": "node dist/index.js",
     "seed:admin": "ts-node-dev --transpile-only src/scripts/seed-admin.ts",
     "seed:student": "ts-node-dev --transpile-only src/scripts/seed-student.ts",
+    "import:content": "ts-node-dev --transpile-only src/scripts/import-content.ts",
     "format": "prettier --write 'src/**/*.{ts,json,md}' 'api/**/*.ts'"
   },
   "dependencies": {
