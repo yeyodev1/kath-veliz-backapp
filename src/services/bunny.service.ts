@@ -1,3 +1,4 @@
+import { execFile } from "child_process";
 import crypto from "crypto";
 import fs from "fs";
 import axios, { AxiosInstance } from "axios";
@@ -162,15 +163,69 @@ export async function listCollections(): Promise<
   }
 }
 
+// Por encima de esto axios + stream falla con `write EPROTO` (se comprobó con 2.34 GB);
+// el mismo archivo con curl sube bien.
+const CURL_OVER_BYTES = 1.9 * 1024 * 1024 * 1024;
+
 /**
- * Sube el archivo por stream. Solo para scripts locales: en Vercel no hay disco
- * ni tiempo para esto, el panel sube directo por TUS.
+ * Sube el archivo con curl. La AccessKey viaja por la entrada estándar (`--config -`):
+ * así no aparece en los argumentos del proceso ni en ningún log.
  */
-export async function uploadVideoFile(guid: string, filePath: string): Promise<void> {
+function uploadWithCurl(guid: string, filePath: string): Promise<void> {
+  const url = `${API_BASE}/library/${env.BUNNY_LIBRARY_ID}/videos/${guid}`;
+  return new Promise((resolve, reject) => {
+    const child = execFile(
+      "curl",
+      [
+        "--config",
+        "-",
+        "--silent",
+        "--show-error",
+        "--fail",
+        "--output",
+        "/dev/null",
+        "--header",
+        "Content-Type: application/octet-stream",
+        "--upload-file",
+        filePath,
+        url,
+      ],
+      { maxBuffer: 1024 * 1024 },
+      (error, _stdout, stderr) => {
+        if (!error) return resolve();
+        // stderr de curl sin -v no incluye cabeceras: no hay llave que filtrar.
+        reject(
+          new Error(
+            `curl: ${String(stderr || error.message)
+              .trim()
+              .slice(0, 300)}`,
+          ),
+        );
+      },
+    );
+    child.stdin?.end(`header = "AccessKey: ${env.BUNNY_STREAM_API_KEY}"\n`);
+  });
+}
+
+/**
+ * Sube el archivo desde disco. Solo para scripts locales: en Vercel no hay disco
+ * ni tiempo para esto, el panel sube directo por TUS.
+ * Los archivos de más de ~1.9 GB van con curl; el resto, por stream con axios.
+ */
+export async function uploadVideoFile(
+  guid: string,
+  filePath: string,
+  curlOverBytes = CURL_OVER_BYTES,
+): Promise<void> {
   if (!fs.existsSync(filePath)) throw new CustomError(`No existe el archivo ${filePath}`, 400);
   try {
+    const http = getClient();
     const { size } = fs.statSync(filePath);
-    await getClient().put(`/videos/${guid}`, fs.createReadStream(filePath), {
+    if (size > curlOverBytes) {
+      await uploadWithCurl(guid, filePath);
+      return;
+    }
+    await http.put(`/videos/${guid}`, fs.createReadStream(filePath), {
       headers: { "Content-Type": "application/octet-stream", "Content-Length": String(size) },
       maxBodyLength: Infinity,
       maxContentLength: Infinity,
