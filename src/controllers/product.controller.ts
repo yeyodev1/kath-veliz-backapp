@@ -29,6 +29,15 @@ export async function listAdmin(_req: Request, res: Response, next: NextFunction
   }
 }
 
+/** GET /api/admin/products/:id — producto completo para el formulario del panel. */
+export async function getAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.status(200).json(await productService.getAdminProduct(String(req.params.id)));
+  } catch (error) {
+    next(error);
+  }
+}
+
 /** POST /api/admin/products */
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
