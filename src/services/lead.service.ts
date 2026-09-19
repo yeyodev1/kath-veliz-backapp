@@ -21,7 +21,12 @@ function toLead(lead: any) {
     source: lead.source,
     kind: lead.kind,
     couponCode: lead.couponCode,
-    product: product ? (populated ? product._id.toString() : product.toString()) : null,
+    // El panel pinta el nombre: la referencia viaja poblada cuando se pudo poblar.
+    product: product
+      ? populated
+        ? { id: product._id.toString(), title: product.title, slug: product.slug }
+        : product.toString()
+      : null,
     productTitle: populated ? product.title : "",
     createdAt: lead.createdAt,
   };
@@ -155,7 +160,7 @@ export async function listLeads(query: any) {
       .sort({ createdAt: -1 })
       .skip((page - 1) * PAGE_SIZE)
       .limit(PAGE_SIZE)
-      .populate("product", "title")
+      .populate("product", "title slug")
       .lean(),
     Lead.countDocuments(filter),
   ]);
@@ -182,7 +187,7 @@ export async function exportLeadsCsv(query: any): Promise<string> {
   const leads = await Lead.find(buildFilter(query))
     .sort({ createdAt: -1 })
     .limit(EXPORT_LIMIT)
-    .populate("product", "title")
+    .populate("product", "title slug")
     .lean();
 
   const header = ["Nombre", "Correo", "Teléfono", "Origen", "Tipo", "Producto", "Cupón", "Fecha"];
