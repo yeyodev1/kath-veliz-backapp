@@ -20,6 +20,7 @@ const admin = [authMiddleware, adminMiddleware];
 
 router.get("/admin/products", admin, productController.listAdmin);
 router.post("/admin/products", admin, productController.create);
+router.get("/admin/products/:id", admin, productController.getAdmin);
 router.patch("/admin/products/:id", admin, productController.update);
 router.delete("/admin/products/:id", admin, productController.remove);
 
