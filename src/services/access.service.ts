@@ -224,6 +224,7 @@ export async function grantManual(input: {
 export async function listAccesses(query: {
   product?: unknown;
   user?: unknown;
+  search?: unknown;
   status?: unknown;
   page?: unknown;
 }) {
@@ -240,8 +241,10 @@ export async function listAccesses(query: {
     filter.product = query.product;
   }
 
-  if (query.user) {
-    const value = String(query.user).trim();
+  // `search` es lo que envía el panel (nombre o correo); `user` queda por contrato.
+  const userQuery = query.user || query.search;
+  if (userQuery) {
+    const value = String(userQuery).trim();
     if (isValidObjectId(value)) {
       filter.user = value;
     } else {
