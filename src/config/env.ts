@@ -42,4 +42,15 @@ export const env = {
   CLOUDINARY_API_KEY: optional("CLOUDINARY_API_KEY", ""),
   CLOUDINARY_API_SECRET: optional("CLOUDINARY_API_SECRET", ""),
   CRON_SECRET: optional("CRON_SECRET", ""),
+  DEMO_STUDENT_EMAIL: optional("DEMO_STUDENT_EMAIL", "").toLowerCase(),
+  DEMO_STUDENT_PASSWORD: optional("DEMO_STUDENT_PASSWORD", ""),
+  PAYPHONE_TOKEN: optional("PAYPHONE_TOKEN", ""),
+  PAYPHONE_STORE_ID: optional("PAYPHONE_STORE_ID", ""),
+  BUNNY_LIBRARY_ID: optional("BUNNY_LIBRARY_ID", ""),
+  BUNNY_CDN_HOSTNAME: optional("BUNNY_CDN_HOSTNAME", ""),
+  BUNNY_STREAM_API_KEY: optional("BUNNY_STREAM_API_KEY", ""),
+  BUNNY_STREAM_READ_KEY: optional("BUNNY_STREAM_READ_KEY", ""),
+  BUNNY_ACCOUNT_API_KEY: optional("BUNNY_ACCOUNT_API_KEY", ""),
+  // Sin esta llave el embed funciona pero no va firmado: pendiente para producción.
+  BUNNY_TOKEN_AUTH_KEY: optional("BUNNY_TOKEN_AUTH_KEY", ""),
 } as const;
