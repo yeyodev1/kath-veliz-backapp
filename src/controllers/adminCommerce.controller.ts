@@ -56,11 +56,13 @@ export async function grantAccess(req: AuthRequest, res: Response, next: NextFun
   }
 }
 
-/** GET /api/admin/access?product=&user=&status=&page= */
+/** GET /api/admin/access?product=&user=&search=&status=&page= */
 export async function listAccess(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    const { product, user, status, page } = req.query;
-    res.status(200).json(await accessService.listAccesses({ product, user, status, page }));
+    const { product, user, search, status, page } = req.query;
+    res
+      .status(200)
+      .json(await accessService.listAccesses({ product, user, search, status, page }));
   } catch (error) {
     next(error);
   }
