@@ -50,3 +50,13 @@ Variables de entorno (Vercel → Project → Settings → Environment Variables)
 ```bash
 vercel --prod
 ```
+
+## Despliegue
+
+- Producción: https://kath-veliz-backapp.vercel.app/api (`/api/health` para comprobar la conexión a Mongo).
+- Vercel está enlazado a este repo: **cada push a `main` despliega solo**. No hace falta `vercel deploy`.
+- Las variables de entorno viven en el proyecto de Vercel (Production y Preview). La lista de nombres está en
+  `.env.example`; los valores nunca se versionan. Al cambiar de dominio hay que actualizar `FRONTEND_URL` y
+  `CORS_ORIGINS` en Vercel y volver a desplegar.
+- Ningún archivo pasa por el API: las imágenes y adjuntos suben directo a Cloudinary con firma y los videos directo
+  a Bunny por TUS, porque Vercel corta los cuerpos de petición en ~4.5 MB.
