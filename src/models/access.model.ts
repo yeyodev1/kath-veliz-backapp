@@ -4,6 +4,7 @@ export const ACCESS_SOURCES = ["purchase", "manual", "demo"] as const;
 export type AccessSource = (typeof ACCESS_SOURCES)[number];
 
 export interface IAccess {
+  _id: Types.ObjectId;
   user: Types.ObjectId;
   product: Types.ObjectId;
   source: AccessSource;
@@ -35,4 +36,6 @@ const accessSchema = new Schema<IAccess>(
 // Un solo acceso por alumno y producto: volver a otorgar actualiza el existente.
 accessSchema.index({ user: 1, product: 1 }, { unique: true });
 
-export const Access = mongoose.models.Access || mongoose.model<IAccess>("Access", accessSchema);
+export const Access =
+  (mongoose.models.Access as mongoose.Model<IAccess>) ||
+  mongoose.model<IAccess>("Access", accessSchema);
