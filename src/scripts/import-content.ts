@@ -445,7 +445,9 @@ async function attachVideos(
       } else {
         const title = lessonEntry.bunnyTitle || `${entry.slug} | ${lessonEntry.title}`;
         let found = await findVideoByTitle(title, 1);
-        if (found && FAILED_STATUSES.includes(found.status)) {
+        // Estado 0 = creado pero sin binario: una subida anterior que se cortó a medias.
+        // Enlazarlo dejaría la lección apuntando a un video vacío que nunca va a estar listo.
+        if (found && (found.status === 0 || FAILED_STATUSES.includes(found.status))) {
           // Intento anterior fallido: se limpia para no dejar dos videos con el mismo título.
           await bunnyService.deleteVideo(found.guid);
           console.log(`[video] ${name}: se borró el intento fallido ${found.guid}`);
