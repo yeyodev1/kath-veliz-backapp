@@ -37,7 +37,7 @@ export const env = {
   ADMIN_PASSWORD: optional("ADMIN_PASSWORD", ""),
   ADMIN_NAME: optional("ADMIN_NAME", "Administración"),
   RESEND_API_KEY: optional("RESEND_API_KEY", ""),
-  RESEND_FROM_EMAIL: optional("RESEND_FROM_EMAIL", "Kath Veliz <notificaciones@kathveliz.com>"),
+  RESEND_FROM_EMAIL: optional("RESEND_FROM_EMAIL", "Kath Veliz <team@kathveliz.com>"),
   CLOUDINARY_CLOUD_NAME: optional("CLOUDINARY_CLOUD_NAME", ""),
   CLOUDINARY_API_KEY: optional("CLOUDINARY_API_KEY", ""),
   CLOUDINARY_API_SECRET: optional("CLOUDINARY_API_SECRET", ""),
